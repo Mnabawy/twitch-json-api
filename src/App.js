@@ -1,12 +1,5 @@
 import React from "react";
 import axios from "axios";
-import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/styles';
-import { useDemoData } from '@mui/x-data-grid-generator';
-import { DataGrid } from '@mui/x-data-grid';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-
 
 
 import "./App.css";
@@ -68,7 +61,7 @@ class App extends React.Component {
       });
   }
 
-  getChannelDetails() {
+  async getChannelDetails() {
     const url = "https://api.twitch.tv/helix/users/";
     const config = {
       headers: {
@@ -79,7 +72,7 @@ class App extends React.Component {
         login: this.state.channels.map(channel => channel),
       },
     };
-    axios
+    await axios
       .get(url, config)
       .then(response => {
         const list = [...response.data.data];
@@ -91,26 +84,40 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('channel details', this.state.channelsDetails)
-
     const { channelsDetails: channels } = this.state
     return (
-      < div >
-        <h1>TWITCH STREAMERS</h1>
-        {
-          channels.map(channel => (
-            <div key={channel.id}>
-              <li><img src={channel.profile_image_url}></img></li>
-              <li>{channel.display_name}</li>
-              {channel.status == "online"
-                ? <p>{`${channel.game_name}  ${channel.title}`}</p>
-                : 'Offline'
-              }
-            </div>
-          ))
-        }
-        <ul>
-        </ul>
+      < div style={{ margin: '0 auto', width: '80%' }}>
+        <header className="w3-container w3-food-grape" style={{ marginTop: 10 }}>
+
+          <h1 style={{ textAlign: 'center' }}>TWITCH STREAMERS</h1>
+        </header>
+        <div className="w3-container">
+          {
+            channels.map(channel => (
+              <div key={channel.id} style={{ marginTop: 10 }} >
+                <ul className="w3-ul w3-card-4">
+                  <li className="w3-bar">
+                    <div className="w3-bar-item" style={{ width: '10%', marginRight: 15 }} >
+                      <img
+                        src={channel.profile_image_url} className="w3-circle w3-hide-small" style={{ width: '85px' }} />
+                    </div>
+                    <div className="w3-bar-item" style={{ width: '70%' }}>
+                      <span className="w3-large">
+                        {channel.display_name}
+                      </span><br />
+                      <span >
+                        {channel.status == "online"
+                          ? <p>{`${channel.game_name}  ${channel.title}`}</p>
+                          : 'Offline'
+                        }
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            ))
+          }
+        </div>
       </div >
     )
   }
